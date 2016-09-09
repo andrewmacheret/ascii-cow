@@ -50,7 +50,7 @@ Build it:
   ./build.sh
   ```
 
-## Exmaple result:
+## Example result:
 
 ![Screenshot](screenshot.png?raw=true "Screenshot")
 
