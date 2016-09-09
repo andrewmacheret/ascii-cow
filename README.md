@@ -9,6 +9,7 @@ Dependencies:
   * [im2a](https://github.com/tzvetkoff/im2a)
   * [cowsay](https://en.wikipedia.org/wiki/Cowsay)
   * [coreutils](https://www.gnu.org/software/coreutils/coreutils.html) - for gsed
+  * [bash](https://www.gnu.org/software/bash/)
 
 Run it:
 
@@ -41,6 +42,7 @@ Dependencies:
   * [docker](https://www.docker.com/products/overview)
   * [git](https://git-scm.com/downloads)
   * [tar](https://en.wikipedia.org/wiki/Tar_(computing))
+  * [bash](https://www.gnu.org/software/bash/)
 
 Build it:
 
