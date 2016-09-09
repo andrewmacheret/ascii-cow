@@ -13,10 +13,10 @@ Dependencies:
 Run it:
 
   ```bash
-  ./ascii-cow.sh example.jpg 80 40
+  ./ascii-cow.sh -f example.jpg 80 40
   
   url='https://raw.githubusercontent.com/andrewmacheret/ascii-cow/master/example.jpg'
-  curl -fsSL "$url" | ./ascii-cow.sh - 80 40
+  ./ascii-cow.sh -u "$url" 80 40
   ```
 
 ## Running docker container:
@@ -28,10 +28,10 @@ Dependencies:
 Run it:
 
   ```bash
-  docker run --rm -it andrewmacheret/ascii-cow ./ascii-cow.sh example.jpg 80 40
+  docker run --rm -it andrewmacheret/ascii-cow ./ascii-cow.sh -f example.jpg 80 40
   
   url='https://raw.githubusercontent.com/andrewmacheret/ascii-cow/master/example.jpg'
-  docker run --rm -it andrewmacheret/ascii-cow curl -fsSL "$url" | ./ascii-cow.sh - 80 40
+  docker run --rm -it andrewmacheret/ascii-cow ./ascii-cow.sh -u "$url" 80 40
   ```
 
 ## Building docker container from source:
@@ -41,7 +41,6 @@ Dependencies:
   * [docker](https://www.docker.com/products/overview)
   * [git](https://git-scm.com/downloads)
   * [tar](https://en.wikipedia.org/wiki/Tar_(computing))
-  * [rm](https://en.wikipedia.org/wiki/Rm_(Unix))
 
 Build it:
 
