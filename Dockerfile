@@ -2,15 +2,15 @@ from gliderlabs/alpine:3.3
 
 # install cowsay
 ADD cowsay.tar.gz /tmp
-RUN apk-install --no-cache perl &&\
+RUN apk-install perl &&\
   cd /tmp/cowsay/ &&\
   echo | ./install.sh &&\
   rm -rf /tmp/cowsay
 
 # install im2a
 ADD im2a.tar.gz /tmp
-RUN apk-install --no-cache imagemagick-dev &&\
-  apk --update add --virtual build-dependencies make autoconf automake libtool gawk gcc g++ ncurses-dev &&\
+RUN apk-install imagemagick-dev &&\
+  apk-install --virtual build-dependencies make autoconf automake libtool gawk gcc g++ ncurses-dev &&\
   cd /tmp/im2a/ &&\
   ./bootstrap &&\
   ./configure &&\
@@ -23,7 +23,7 @@ RUN apk-install --no-cache imagemagick-dev &&\
   rm -rf /tmp/im2a &&\
   apk del build-dependencies
 
-RUN apk-install --no-cache bash curl
+RUN apk-install bash curl
 
 WORKDIR /root
 ADD ascii-cow.sh .
