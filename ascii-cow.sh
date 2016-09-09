@@ -16,7 +16,7 @@ which im2a >/dev/null || {
   exit 1
 }
 
-which im2a >/dev/null || {
+which cowsay >/dev/null || {
   echo "cowsay required. Run `brew install cowsay` on OS/X or check your package manager." 1>&2
   exit 1
 }
