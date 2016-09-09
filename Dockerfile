@@ -23,7 +23,7 @@ RUN apk-install --no-cache imagemagick-dev &&\
   rm -rf /tmp/im2a &&\
   apk del build-dependencies
 
-RUN apk-install --no-cache bash
+RUN apk-install --no-cache bash curl
 
 WORKDIR /root
 ADD ascii-cow.sh .
