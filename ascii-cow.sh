@@ -1,9 +1,24 @@
-#!/bin/bash -e
+#!/bin/bash
 
 usage() {
-  echo "$( basename "$0" ) {-f IMAGE-FILE | -u IMAGE-URL} {WIDTH} {HEIGHT}" 1>&2
-  exit 1
+  echo "USAGE: $( basename "$0" ) {-f IMAGE-FILE | -u IMAGE-URL} {WIDTH} {HEIGHT}" 1>&2
+  cleanup 1
 }
+error() {
+  echo "ERROR: $1" 1>&2
+  cleanup 1
+}
+make_temp_dir() {
+  TEMP_DIR="/tmp/${0##*/}-$$"
+  mkdir -p "${TEMP_DIR}"
+}
+cleanup() {
+  [[ "${TEMP_DIR}" != "" ]] && (rm -rf "${TEMP_DIR}" || echo "Failed to delete '${TEMP_DIR}'" 1>&2)
+  [[ $1 != "" ]] && exit "$1" || exit 0
+}
+trap 'error "Unexpected error! Exit code: $?"' ERR
+trap 'error "Interrupted!"' INT
+trap 'error "Terminated!"' TERM
 
 [[ "$#" -eq 4 ]] || usage
 
@@ -11,37 +26,41 @@ IMAGE_OPTION="$1"
 IMAGE_FILE="$2"
 WIDTH="$3"
 HEIGHT="$4"
+EYES=".0"
 
-[[ "$IMAGE_FILE" != "" ]] || usage
-[[ "$WIDTH" != "" ]] && [[ "$WIDTH" -gt 0 ]] || usage
-[[ "$HEIGHT" != "" ]] && [[ "$HEIGHT" -gt 0 ]] || usage
-[[ "$IMAGE_OPTION" == "-f" ]] || [[ "$IMAGE_OPTION" == "-u" ]] || usage
+[[ "${IMAGE_FILE}" != "" ]] || usage
+[[ "${WIDTH}" != "" ]] && [[ "${WIDTH}" -gt 0 ]] || usage
+[[ "${HEIGHT}" != "" ]] && [[ "${HEIGHT}" -gt 0 ]] || usage
+[[ "${IMAGE_OPTION}" == "-f" ]] || [[ "${IMAGE_OPTION}" == "-u" ]] || usage
 
 which im2a >/dev/null || {
-  echo "im2a required. Run 'brew install tzvetkoff/extras/im2a' on OS/X or visit https://github.com/tzvetkoff/im2a for alternatives." 1>&2
-  exit 1
+  error "Dependency im2a missing. Visit https://github.com/tzvetkoff/im2a"
+}
+
+which perl >/dev/null || {
+  error "Dependency perl missing."
 }
 
 which cowsay >/dev/null || {
-  echo "cowsay required. Run 'brew install cowsay' on OS/X or check your local package manager." 1>&2
-  exit 1
+  error "Dependency cowsay missing."
 }
 
-SED="$(which gsed || which sed)"
-(echo | "$SED" -r 's/.//' 2>&1 >/dev/null) || {
-  echo "gsed required. Run 'brew install coreutils' on OS/X or check your local package manager." 1>&2
-  exit 1
-}
+if [[ "${IMAGE_OPTION}" == "-u" ]]; then
+  (which curl >/dev/null) || {
+    error "Dependency curl missing and is required for the -u option."
+  }
 
-[[ "$IMAGE_OPTION" == "-f" ]] || (which curl >/dev/null) || {
-  echo "curl is required for the -u option. Please check your local package manager." 1>&2
-  exit 1
-}
-
-eyes=.0
-
-if [[ "$IMAGE_OPTION" == "-f" ]]; then
-  im2a -W "$WIDTH" -H "$HEIGHT" "$IMAGE_FILE" | cowsay -e "$eyes" -n | "$SED" -r 's/(([-_]){'"$WIDTH"'})[-_]+/\1\2\2/' | "$SED" -r 's/ +([|\/\]) *$/ \1/'
+  make_temp_dir
+  FILE="${TEMP_DIR}/downloaded-image"
+  curl -fsSL "${IMAGE_FILE}" > "${FILE}"
 else
-  curl -fsSL "$IMAGE_FILE" | im2a -W "$WIDTH" -H "$HEIGHT" - | cowsay -e "$eyes" -n | "$SED" -r 's/(([-_]){'"$WIDTH"'})[-_]+/\1\2\2/' | "$SED" -r 's/ +([|\/\]) *$/ \1/'
+  FILE="${IMAGE_FILE}"
 fi
+
+im2a -W "${WIDTH}" -H "${HEIGHT}" "${FILE}" |
+  cowsay -e "${EYES}" -n |
+  perl -p -e 's/(([-_]){'"${WIDTH}"'})[-_]+/\1\2\2/' |
+  perl -p -e 's/ +([|\/\\]) *$/ \1/'
+
+cleanup
+
