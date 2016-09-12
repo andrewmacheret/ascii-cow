@@ -16,9 +16,12 @@ test() {
   "$@"
 }
 
-test docker run --rm -it andrewmacheret/ascii-cow ./ascii-cow.sh -f example.jpg 40 20
-
+file='example.jpg'
 url='https://raw.githubusercontent.com/andrewmacheret/ascii-cow/master/example.jpg'
+
+test ./ascii-cow.sh -f "$file" 40 20
+test ./ascii-cow.sh -u "$url" 40 20
+test docker run --rm -it andrewmacheret/ascii-cow ./ascii-cow.sh -f "$file" 40 20
 test docker run --rm -it andrewmacheret/ascii-cow ./ascii-cow.sh -u "$url" 40 20
 
 echo -e '\nTagging ...'
