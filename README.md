@@ -7,17 +7,17 @@ Give it an image and a size, and get colorful ascii art spoken by a cow.
 Dependencies:
 
   * [im2a](https://github.com/tzvetkoff/im2a)
+  * [perl](https://www.perl.org/)
   * [cowsay](https://en.wikipedia.org/wiki/Cowsay)
-  * [coreutils](https://www.gnu.org/software/coreutils/coreutils.html) - for gsed
   * [bash](https://www.gnu.org/software/bash/)
 
 Run it:
 
   ```bash
-  ./ascii-cow.sh -f example.jpg 80 40
+  ./ascii-cow.sh -f example.jpg -w 80
   
   url='https://raw.githubusercontent.com/andrewmacheret/ascii-cow/master/example.jpg'
-  ./ascii-cow.sh -u "$url" 80 40
+  ./ascii-cow.sh -u "$url" -w 80
   ```
 
 ## Running docker container:
@@ -29,10 +29,10 @@ Dependencies:
 Run it:
 
   ```bash
-  docker run --rm -it andrewmacheret/ascii-cow ./ascii-cow.sh -f example.jpg 80 40
+  docker run --rm -it andrewmacheret/ascii-cow ./ascii-cow.sh -f example.jpg -w 80
   
   url='https://raw.githubusercontent.com/andrewmacheret/ascii-cow/master/example.jpg'
-  docker run --rm -it andrewmacheret/ascii-cow ./ascii-cow.sh -u "$url" 80 40
+  docker run --rm -it andrewmacheret/ascii-cow ./ascii-cow.sh -u "$url" -w 80
   ```
 
 ## Building docker container from source:
