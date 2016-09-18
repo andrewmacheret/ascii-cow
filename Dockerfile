@@ -14,11 +14,13 @@ RUN apk-install imagemagick-dev &&\
   cd /tmp/im2a/ &&\
   ./bootstrap &&\
   ./configure &&\
-  mkdir lib-tmp/ &&\
   ln -s /usr/lib/liblcms2.so.2 /usr/lib/liblcms2.so &&\
   ln -s /usr/lib/libfontconfig.so.1 /usr/lib/libfontconfig.so &&\
   ln -s /usr/lib/libfreetype.so.6 /usr/lib/libfreetype.so &&\
   ln -s /lib/libz.so.1 /lib/libz.so &&\
+  touch Makefile.am &&\
+  find . -exec touch {} \; &&\
+  make clean &&\
   make install &&\
   rm -rf /tmp/im2a &&\
   apk del build-dependencies
