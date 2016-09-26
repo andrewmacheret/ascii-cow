@@ -25,11 +25,13 @@ RUN apk-install imagemagick-dev &&\
   rm -rf /tmp/im2a &&\
   apk del build-dependencies
 
-RUN apk-install bash curl
+RUN apk-install bash curl nodejs
 
 WORKDIR /root
+ADD node_modules/ node_modules/
 ADD ascii-cow.sh .
+ADD ascii-cow-server.js .
 ADD example.jpg .
 
-CMD ["bash"]
+CMD ["node", "ascii-cow-server.js"]
 

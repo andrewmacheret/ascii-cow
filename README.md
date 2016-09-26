@@ -29,10 +29,19 @@ Dependencies:
 Run it:
 
   ```bash
+  # convert a file
   docker run --rm -it andrewmacheret/ascii-cow ./ascii-cow.sh -f example.jpg -w 80
   
+  # convert a url
   url='https://raw.githubusercontent.com/andrewmacheret/ascii-cow/master/example.jpg'
   docker run --rm -it andrewmacheret/ascii-cow ./ascii-cow.sh -u "$url" -w 80
+
+  # run as a server on port 8080
+  docker run -d andrewmacheret/ascii-cow
+
+  # convert a url via a GET request
+  url='https://raw.githubusercontent.com/andrewmacheret/ascii-cow/master/example.jpg'
+  echo -e "$( curl -s "http://localhost:8080/ascii-cows?url=$url&width=80" )"
   ```
 
 ## Building docker container from source:
