@@ -1,5 +1,7 @@
 #!/bin/bash
 
+ASPECT_RATIO='2:1'
+
 usage() {
   [[ "$1" != "" ]] && echo "ERROR: $1" 1>&2
   cat 1>&2 <<EOF
@@ -11,7 +13,7 @@ Option                               | Group  | Default
 {-u|--url}           <IMAGE-URL>     | SOURCE |
 {-w|--width}         <WIDTH>         | SIZE   |
 {-h|--height}        <HEIGHT>        | SIZE   |
-{-a|--aspect-ratio}  <WIDTH:HEIGHT>  | SIZE   | 4:3
+{-a|--aspect-ratio}  <WIDTH:HEIGHT>  | SIZE   | $ASPECT_RATIO
 {-s|--cowsay}                        | OTHER  | yes
 {-t|--cowthink}                      | OTHER  |
 {-c|--cow-args}      <COW_ARGS>      | OTHER  |
@@ -53,7 +55,6 @@ IMAGE_OPTION=
 IMAGE_FILE=
 WIDTH=
 HEIGHT=
-ASPECT_RATIO='4:3'
 COW_CMD='cowsay'
 COW_ARGS=
 IM2A_ARGS=
@@ -157,12 +158,12 @@ load_image_size() {
 calculate_size() {
   if [[ "${WIDTH}" != "" ]] && [[ "${HEIGHT}" == "" ]]; then
     load_image_size
-    HEIGHT=$(( ($WIDTH * $image_width * $ASPECT_HEIGHT) / ($image_height * $ASPECT_WIDTH) ))
-    #echo "$HEIGHT = ($WIDTH * $image_width * $ASPECT_HEIGHT) / ($image_height * $ASPECT_WIDTH)"
+    HEIGHT=$(( ($WIDTH * $image_height * $ASPECT_HEIGHT) / ($image_width * $ASPECT_WIDTH) ))
+    #echo "$HEIGHT = ($WIDTH * $image_height * $ASPECT_HEIGHT) / ($image_width * $ASPECT_WIDTH)"
   elif [[ "${WIDTH}" == "" ]] && [[ "${HEIGHT}" != "" ]]; then
     load_image_size
-    WIDTH=$(( ($HEIGHT * $image_height * $ASPECT_WIDTH) / ($image_width * $ASPECT_HEIGHT) ))
-    #echo "$WIDTH = ($HEIGHT * $image_height * $ASPECT_WIDTH) / ($image_width * $ASPECT_HEIGHT)"
+    WIDTH=$(( ($HEIGHT * $image_width * $ASPECT_WIDTH) / ($image_height * $ASPECT_HEIGHT) ))
+    #echo "$WIDTH = ($HEIGHT * $image_width * $ASPECT_WIDTH) / ($image_height * $ASPECT_HEIGHT)"
   fi
 }
 

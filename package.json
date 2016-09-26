@@ -1,0 +1,24 @@
+{
+  "name": "ascii-cow",
+  "version": "1.0.0",
+  "description": "Give it an image and a size, and get colorful ascii art spoken by a cow.",
+  "main": "ascii-cow-server.sh",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andrewmacheret/ascii-cow.git"
+  },
+  "keywords": [
+    "ascii",
+    "cowsay",
+    "cow"
+  ],
+  "author": "Andrew Macheret <andrew.macheret@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/andrewmacheret/ascii-cow/issues"
+  },
+  "homepage": "https://github.com/andrewmacheret/ascii-cow#readme",
+  "dependencies": {
+    "express": "^4.14.0"
+  }
+}
