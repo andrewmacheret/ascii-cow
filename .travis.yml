@@ -1,29 +1,34 @@
 sudo: required
+
 language: node_js
+
 node_js:
 - '6'
+
+env:
+  global:
+  - COMMIT=${TRAVIS_COMMIT::8}
+  - secure: BjlnL+MdqcmVyzQza2fYgym+OABI/1lNlpBwLYZ3bXlyLvNGt+oo+S8vTj0Ilzu5945NfbyKUVpMUxLwhjNWL1PvjOPfGk2iOxLYgVt4IT1TewFZGISVENX0aUAj+tTHf8l9mpCnRczP45GE4VNc2zqZuaENagttxwnNEff/Qn/                  adUrNh9pc4BcmWaY2S7kYJR179AuESMVej7K+5JwvLCSMaZZo+8k162XEkzDFnpbYzYlb+lXdSX9fkHVrHszkApxoqbg9rU+                                                                                                         Xn1QU6DdHaQjjx6ea1lxl7RdE5xomI87mNptesZmIjhAFhnUHNSNRRM06NMuqW7gmGv8oFW95MI0YtaMwZZA7dHnoVMP2XjvXPFr3mW13QVWbRTTyMEV1CLIbc15bKsmP3QUjHJT45LuNYGnogE7DuAR6ox0s9wp8efYfs9IgaZ1Gd4dvWC1ahLfvm+thx+          p1DYaL9tMeQDMI2lib/BPbqHXH9B5O25gb2y1yRjFwk7rZ56ZpMy3oz02uX6ZaFqbNOeHvKL5SBP2i5bZf26+On8PeWHpzlJaHTzgEYerqk61P4I2bbQffhIU/meZ6Z25BpmD4oLNQ1DQryg2Jyy+I95zRZuY0y/3g/NqsGWXQMoPa62IZWQ45m4y4LffJjJ1I/      9M9uPxwfcqiFuwMfV+kj5ZPK1PpMEo=
+  - secure: mPiw+UMJzQKYvdTXheyY5AgXMim120vgxOJgEkZkv7eVmjRU+bXqYMSGFoYWJDBCOrOIu0a2nBW/                                                                                                                 vec0C4AnLKbWV1Is8AyMXj0crKm9ueBHDoxB7IhgkF22GG7a1L0UdvgV9VAk1QDuzfMt3pR9wdIM7eBwyeVxgUS3mPZzAxoWd4usCJDbAtgQtpHubQ5DxsAl754Bl0FqQsvrKVv/QtQ75sXsW58xVsdtmMFJbEA1F/J9Z0n4iWzJqRFXPabBjgtFoDL+             aBmlAG8mKPv8XdHq/wjIlORyOLcQLVih69S/2ODJlKrmAWoFjTyWqLim/i89owbFuWSeeaXuoS/CKB1dGHo+r4Pihw/aqfF8yLgta8NunAfRv6KFwYcPOb38Hm+IerHYwoaMfIC7dB/wjsYOwzRpWI+5kM/S+1goVNB4ToC11f7b/                            nN6lcCrMefSIygrU4mUyj0yrIhL0gsXWnFKLAFOWeEqS8dDBjH/u9/gQS23k8/NtqfBM2jAyCqBHXFm9tH0CW2yKC3cNokbtE5U1dQGeT77jwkiRfs/YBI9UYRElOe3iW5HDmFddlRRt/SShftDvetPWOTYLmlcr//xlx+                                   OQSWeL7vjGuCfElq554dWnTPuDPmj8ZoaqCt9clfi8Hax5CtoCas0S7T0JnkzVlo/1JVg2E/5vzXN58M=
+
 services:
 - docker
-before_install:
+
+before_install: 
+
 install:
 - npm install
 - git clone https://github.com/schacon/cowsay.git
 - tar cvzf cowsay.tar.gz --exclude=.gitignore --exclude=.git cowsay/
 - git clone https://github.com/tzvetkoff/im2a.git
 - tar cvzf im2a.tar.gz --exclude=.gitignore --exclude=.git im2a/
+
 script:
 - docker build -t andrewmacheret/ascii-cow:latest .
+
 after_script:
-- docker login -e "$DOCKER_EMAIL" -u "$DOCKER_USER" -p "$DOCKER_PASS"
+- docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
 - docker tag andrewmacheret/ascii-cow:latest andrewmacheret/ascii-cow:1.1
 - docker push andrewmacheret/ascii-cow:latest
 - docker push andrewmacheret/ascii-cow:1.1
-env:
-  global:
-  - secure: awiI71+HpHAJqFUQkN/TF3Txt339wP0slv20yNheOEyNYN7FceZth4gV1ITha3B46K34euH931lkYKrQBVIepBSaiUgamtBMNgf2gG/dM4n1PoBIYrbuuFUx59i2SnkEehh5ysz220vU/VX9jBqKnyqwcIdV2+xjj0QzUznR0U9r6vfs8C0vt8BSbkG8iW8aRqnl6iXMYrnfUqzUip75ctCRvmbhwZwZiPcuqYdnKrKrnGThsdY0uKlHWve9PX8J9XjHTj5bTcWFDh53wEOUulQKUlORpfN3cv8/1GPSPTOyyfYGz9xofS1zTVxvDA0fI9OKMx7Tjv93WjDbJ4AJzxXGc71LSjtjDzTTHfwccSbhGJXMEbp3Mb0dZOwfAMjqeOHMRGdQXabFZDcTAhsKi7FaMs/Qvo2AgVQvNtyCvSA+wNLET9PTU16zaHskN4UwrTcyycj8DIfu68Ixget11nXqJiGWaZwyVzcq8j+JnfBmGndCr44AYytOEXvfyHNP+vcWruc0n50g09Pjtx+xoUY+SPMMMufyswI/FrmZdouf6SfCoZ3J36MqyDyI+V/NhVzc/5TnpNjagTjamYPZ8GzxJccITiqDd8OJMnmaFmBDh5LIu3dc2haiGlB2mu4VoNGOkA0/DI7h8zcB9T09xMiMgtJwNpqPRoz3xqLy/lQ=
-  - secure: dShOjmFDHQ3nwEXfNdPaPfo3FPZFZvzH5TZ3SBhwQqw+iHN4+n5J+RTF3c9vJT/U1Ku3PqIkJxPNq622h64qVDFqFmgRcpSKphWQdP5CxNKTDkfz8HxuNhHQUXWE9sk/Gk0/m89Fie0RxSmTGkXUibX/ucbqLIewbQFhdrPkpzNIHIVPaVKTDHMeZt9IO6OnSNlaBCG8TWoC9zyIzlQfNlNAAFLPDmYd7WuedK7I+tQC+hWdlHpYS+siQTz3Q3yONT3rY2DNPlJgAG/xT/WHlmoOfTsfZyzx6BBmq0GwUmQhKSTU1z/8p+6wYtKc75qo7KLfv6mX+Mte98Rw/AvCmwN5BIHu8fCZgwssuhAXlW1PBjJJav8USzUXRL8roLVPUxDkR+gY0xmW5IYHhTvaMhgGIPQaOj8jvSTG3Nj5WkKvhnWRLLNfSt0ULzO1GE04/w3E3Z6CHKzfN23j9KPLZQ/l8jslW34kxOdWk5ssVbtS17Y0X9+ZXocgHl5YPH4t+whxzLu1XnKfd7fBz/jaVKSaCpO/EzdNHwPe2JyJvswruyhOvTBuTSGSI9RyRqAjcuJvtboPD8qkJwjreooyDNurNQm0CAYw+8GHgB1jwHdSjUn2h5xhpSDf4VQdIhOnevQGT93fh0rb4z4lpBIo/owT51omYT0qNA+EeZ1q+vs=
-  - secure: YCFQYd7swXuOg7ouzRX+3BTqjA42+PYFaheJbjQKCBMbcJRAfLkf1KIm9xDTwjicbIjFLQAh9An61m+cVG3lvDsKwNrn2zkxJBO/1xScSSJBYQkg6wrOAKnitH3dQUwk2GxqD8HsXVI2wXiPRUgyrznQSqU1GTPuJUXOy+WuMDJ9+fcO+9ZDW43vpalY0I3wVjZVnIaB/nJwa968oic4aZCx1jMK029xSU2Jjw9p7iixwDHxZixE6kpFEOFJmOcTnmrUgpM52GTl1yThGZYNJ5J5ccPkGF5cYcqHxSku+BPAy0PjykDNTlLWmqhNeiflfymqTrYnTa7OTXDHuL6DR2uRmkPbfdUMe36mgd7oWZuZfWjr5pYg+Q1Wtq7+LgYKkWZIIOqllNRnryBRiBnCydfpGHF49Ygu/QJjZzeaLWsCeyfgQzQVUfTpOErm6f73FuOnb+VAVlHQ9fWbbEr5HWQcO3dFrsB0usexH9N9W16vhNQgTyglN+STEHFWlx73gyTz3VflEXSgStZUj25gjfim0zoqAah69OnZikwAF1x6zDpGXTsaTBsNF9mVEqBW4+W8/mYIInd/2r5X0CEuSGWRAIzlvWSeaP4w3MA52/fATTTRwpYKhNOg+teTW1VtEPY75PbHXNU5Cb86OJfLd3RJODt5nqh2rYaBCiyXNYk=
-  - COMMIT=${TRAVIS_COMMIT::8}
-
-
 
