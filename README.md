@@ -1,6 +1,6 @@
 # ascii-cow
 
-[![Build Status](https://travis-ci.org/andrewmacheret/ascii-cow.svg?branch=master)](https://travis-ci.org/andrewmacheret/ascii-cow) [![Docker Stars](https://img.shields.io/docker/stars/andrewmacheret/ascii-cow.svg)](https://hub.docker.com/r/andrewmacheret/ascii-cow/) [![Docker Pulls](https://img.shields.io/docker/pulls/andrewmacheret/ascii-cow.svg)](https://hub.docker.com/r/andrewmacheret/ascii-cow/)
+[![Build Status](https://travis-ci.org/andrewmacheret/ascii-cow.svg?branch=master)](https://travis-ci.org/andrewmacheret/ascii-cow) [![Docker Stars](https://img.shields.io/docker/stars/andrewmacheret/ascii-cow.svg)](https://hub.docker.com/r/andrewmacheret/ascii-cow/) [![Docker Pulls](https://img.shields.io/docker/pulls/andrewmacheret/ascii-cow.svg)](https://hub.docker.com/r/andrewmacheret/ascii-cow/) [![License](https://img.shields.io/badge/license-MIT-lightgray.svg)](LICENSE.md)
 
 Give it an image and a size, and get colorful ascii art spoken by a cow.
 
