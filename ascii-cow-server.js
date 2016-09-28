@@ -47,14 +47,24 @@ var invalidInput = function(res, error) {
   res.status(400).send(error);
 };
 
-console.log('Registering GET /ascii-cows/_available');
-app.get('/ascii-cows/_available', function(req, res) {
+console.log('Registering GET /');
+app.get('/', function(req, res) {
+  var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+  var apis = [
+    fullUrl + 'cows',
+    fullUrl + 'convert'
+  ];
+  res.send(apis.join('\n'));
+});
+
+console.log('Registering GET /cows');
+app.get('/cows', function(req, res) {
   var cowResult = run('cowsay', ['-l']);
   res.send(cowResult.stdout.toString('utf8'));
 });
 
-console.log('Registering GET /ascii-cows');
-app.get('/ascii-cows', function(req, res) {
+console.log('Registering GET /convert');
+app.get('/convert', function(req, res) {
   // image source
   var url = req.query['url'];
   var file = req.query['file'];
@@ -156,7 +166,8 @@ app.get('/ascii-cows', function(req, res) {
   }
 });
 
-app.listen(8080, function () {
-  console.log('Listening on port 8080');
+var port = 80;
+app.listen(port, function () {
+  console.log('Listening on port ' + port);
 });
 
