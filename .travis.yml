@@ -13,7 +13,7 @@ install:
 - tar cvzf im2a.tar.gz --exclude=.gitignore --exclude=.git im2a/
 script:
 - docker build -t andrewmacheret/ascii-cow:latest .
-deploy:
+after_script:
 - docker login -e "$DOCKER_EMAIL" -u "$DOCKER_USER" -p "$DOCKER_PASS"
 - docker tag andrewmacheret/ascii-cow:latest andrewmacheret/ascii-cow:1.1
 - docker push andrewmacheret/ascii-cow:latest
