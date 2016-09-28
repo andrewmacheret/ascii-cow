@@ -1,0 +1,28 @@
+sudo: required
+language: node_js
+node_js:
+- '6'
+services:
+- docker
+before_install:
+install:
+- npm install
+- git clone https://github.com/schacon/cowsay.git
+- tar cvzf cowsay.tar.gz --exclude=.gitignore --exclude=.git cowsay/
+- git clone https://github.com/tzvetkoff/im2a.git
+- tar cvzf im2a.tar.gz --exclude=.gitignore --exclude=.git im2a/
+script:
+- docker build -t andrewmacheret/ascii-cow:latest .
+deploy:
+- docker login -e "$DOCKER_EMAIL" -u "$DOCKER_USER" -p "$DOCKER_PASS"
+- docker tag andrewmacheret/ascii-cow:latest andrewmacheret/ascii-cow:1.1
+- docker push andrewmacheret/ascii-cow:latest
+- docker push andrewmacheret/ascii-cow:1.1
+env:
+  global:
+  - secure: awiI71+HpHAJqFUQkN/TF3Txt339wP0slv20yNheOEyNYN7FceZth4gV1ITha3B46K34euH931lkYKrQBVIepBSaiUgamtBMNgf2gG/dM4n1PoBIYrbuuFUx59i2SnkEehh5ysz220vU/VX9jBqKnyqwcIdV2+xjj0QzUznR0U9r6vfs8C0vt8BSbkG8iW8aRqnl6iXMYrnfUqzUip75ctCRvmbhwZwZiPcuqYdnKrKrnGThsdY0uKlHWve9PX8J9XjHTj5bTcWFDh53wEOUulQKUlORpfN3cv8/1GPSPTOyyfYGz9xofS1zTVxvDA0fI9OKMx7Tjv93WjDbJ4AJzxXGc71LSjtjDzTTHfwccSbhGJXMEbp3Mb0dZOwfAMjqeOHMRGdQXabFZDcTAhsKi7FaMs/Qvo2AgVQvNtyCvSA+wNLET9PTU16zaHskN4UwrTcyycj8DIfu68Ixget11nXqJiGWaZwyVzcq8j+JnfBmGndCr44AYytOEXvfyHNP+vcWruc0n50g09Pjtx+xoUY+SPMMMufyswI/FrmZdouf6SfCoZ3J36MqyDyI+V/NhVzc/5TnpNjagTjamYPZ8GzxJccITiqDd8OJMnmaFmBDh5LIu3dc2haiGlB2mu4VoNGOkA0/DI7h8zcB9T09xMiMgtJwNpqPRoz3xqLy/lQ=
+  - secure: dShOjmFDHQ3nwEXfNdPaPfo3FPZFZvzH5TZ3SBhwQqw+iHN4+n5J+RTF3c9vJT/U1Ku3PqIkJxPNq622h64qVDFqFmgRcpSKphWQdP5CxNKTDkfz8HxuNhHQUXWE9sk/Gk0/m89Fie0RxSmTGkXUibX/ucbqLIewbQFhdrPkpzNIHIVPaVKTDHMeZt9IO6OnSNlaBCG8TWoC9zyIzlQfNlNAAFLPDmYd7WuedK7I+tQC+hWdlHpYS+siQTz3Q3yONT3rY2DNPlJgAG/xT/WHlmoOfTsfZyzx6BBmq0GwUmQhKSTU1z/8p+6wYtKc75qo7KLfv6mX+Mte98Rw/AvCmwN5BIHu8fCZgwssuhAXlW1PBjJJav8USzUXRL8roLVPUxDkR+gY0xmW5IYHhTvaMhgGIPQaOj8jvSTG3Nj5WkKvhnWRLLNfSt0ULzO1GE04/w3E3Z6CHKzfN23j9KPLZQ/l8jslW34kxOdWk5ssVbtS17Y0X9+ZXocgHl5YPH4t+whxzLu1XnKfd7fBz/jaVKSaCpO/EzdNHwPe2JyJvswruyhOvTBuTSGSI9RyRqAjcuJvtboPD8qkJwjreooyDNurNQm0CAYw+8GHgB1jwHdSjUn2h5xhpSDf4VQdIhOnevQGT93fh0rb4z4lpBIo/owT51omYT0qNA+EeZ1q+vs=
+  - secure: YCFQYd7swXuOg7ouzRX+3BTqjA42+PYFaheJbjQKCBMbcJRAfLkf1KIm9xDTwjicbIjFLQAh9An61m+cVG3lvDsKwNrn2zkxJBO/1xScSSJBYQkg6wrOAKnitH3dQUwk2GxqD8HsXVI2wXiPRUgyrznQSqU1GTPuJUXOy+WuMDJ9+fcO+9ZDW43vpalY0I3wVjZVnIaB/nJwa968oic4aZCx1jMK029xSU2Jjw9p7iixwDHxZixE6kpFEOFJmOcTnmrUgpM52GTl1yThGZYNJ5J5ccPkGF5cYcqHxSku+BPAy0PjykDNTlLWmqhNeiflfymqTrYnTa7OTXDHuL6DR2uRmkPbfdUMe36mgd7oWZuZfWjr5pYg+Q1Wtq7+LgYKkWZIIOqllNRnryBRiBnCydfpGHF49Ygu/QJjZzeaLWsCeyfgQzQVUfTpOErm6f73FuOnb+VAVlHQ9fWbbEr5HWQcO3dFrsB0usexH9N9W16vhNQgTyglN+STEHFWlx73gyTz3VflEXSgStZUj25gjfim0zoqAah69OnZikwAF1x6zDpGXTsaTBsNF9mVEqBW4+W8/mYIInd/2r5X0CEuSGWRAIzlvWSeaP4w3MA52/fATTTRwpYKhNOg+teTW1VtEPY75PbHXNU5Cb86OJfLd3RJODt5nqh2rYaBCiyXNYk=
+  - COMMIT=${TRAVIS_COMMIT::8}
+
+
