@@ -10,22 +10,21 @@ env:
     # DOCKER_USERNAME and DOCKER_PASSWORD
     - secure: BjlnL+MdqcmVyzQza2fYgym+OABI/1lNlpBwLYZ3bXlyLvNGt+oo+S8vTj0Ilzu5945NfbyKUVpMUxLwhjNWL1PvjOPfGk2iOxLYgVt4IT1TewFZGISVENX0aUAj+tTHf8l9mpCnRczP45GE4VNc2zqZuaENagttxwnNEff/Qn/                  adUrNh9pc4BcmWaY2S7kYJR179AuESMVej7K+5JwvLCSMaZZo+8k162XEkzDFnpbYzYlb+lXdSX9fkHVrHszkApxoqbg9rU+                                                                                                         Xn1QU6DdHaQjjx6ea1lxl7RdE5xomI87mNptesZmIjhAFhnUHNSNRRM06NMuqW7gmGv8oFW95MI0YtaMwZZA7dHnoVMP2XjvXPFr3mW13QVWbRTTyMEV1CLIbc15bKsmP3QUjHJT45LuNYGnogE7DuAR6ox0s9wp8efYfs9IgaZ1Gd4dvWC1ahLfvm+thx+          p1DYaL9tMeQDMI2lib/BPbqHXH9B5O25gb2y1yRjFwk7rZ56ZpMy3oz02uX6ZaFqbNOeHvKL5SBP2i5bZf26+On8PeWHpzlJaHTzgEYerqk61P4I2bbQffhIU/meZ6Z25BpmD4oLNQ1DQryg2Jyy+I95zRZuY0y/3g/NqsGWXQMoPa62IZWQ45m4y4LffJjJ1I/      9M9uPxwfcqiFuwMfV+kj5ZPK1PpMEo=
     - secure: mPiw+UMJzQKYvdTXheyY5AgXMim120vgxOJgEkZkv7eVmjRU+bXqYMSGFoYWJDBCOrOIu0a2nBW/                                                                                                                 vec0C4AnLKbWV1Is8AyMXj0crKm9ueBHDoxB7IhgkF22GG7a1L0UdvgV9VAk1QDuzfMt3pR9wdIM7eBwyeVxgUS3mPZzAxoWd4usCJDbAtgQtpHubQ5DxsAl754Bl0FqQsvrKVv/QtQ75sXsW58xVsdtmMFJbEA1F/J9Z0n4iWzJqRFXPabBjgtFoDL+             aBmlAG8mKPv8XdHq/wjIlORyOLcQLVih69S/2ODJlKrmAWoFjTyWqLim/i89owbFuWSeeaXuoS/CKB1dGHo+r4Pihw/aqfF8yLgta8NunAfRv6KFwYcPOb38Hm+IerHYwoaMfIC7dB/wjsYOwzRpWI+5kM/S+1goVNB4ToC11f7b/                            nN6lcCrMefSIygrU4mUyj0yrIhL0gsXWnFKLAFOWeEqS8dDBjH/u9/gQS23k8/NtqfBM2jAyCqBHXFm9tH0CW2yKC3cNokbtE5U1dQGeT77jwkiRfs/YBI9UYRElOe3iW5HDmFddlRRt/SShftDvetPWOTYLmlcr//xlx+                                   OQSWeL7vjGuCfElq554dWnTPuDPmj8ZoaqCt9clfi8Hax5CtoCas0S7T0JnkzVlo/1JVg2E/5vzXN58M=
-    - COMMIT=${TRAVIS_COMMIT::8}
+    - CONTAINER_NAME='ascii-cow'
+    - IMAGE='andrewmacheret/${CONTAINER_NAME}'
+    - VERSION=1.1
     - TEST_FILE='example.jpg'
     - TEST_URL='https://raw.githubusercontent.com/andrewmacheret/ascii-cow/master/example.jpg'
     - TEST_WIDTH='40'
     - TEST_HEIGHT='20'
     - TEST_PORT='9999'
-    - IMAGE='andrewmacheret/ascii-cow'
-    - VERSION=1.1
 
 services:
 - docker
 
-before_install: 
-
 install:
-  # install pre-reqs
+  # set up dependencies
+  - set -e
   - npm install
   - git clone https://github.com/schacon/cowsay.git
   - tar cvzf cowsay.tar.gz --exclude=.gitignore --exclude=.git cowsay/
@@ -34,18 +33,20 @@ install:
 
 script:
   # build and test
+  - set -e
   - docker build -t "${IMAGE}":latest .
-  - docker run -d --name ascii-cow-test -p "${TEST_PORT}":80 "${IMAGE}"
-  - docker exec -it ascii-cow-test ./ascii-cow.sh -f "${TEST_FILE}" -w "${TEST_WIDTH}"
-  - docker exec -it ascii-cow-test ./ascii-cow.sh -f "${TEST_FILE}" -w "${TEST_WIDTH}" -h "${TEST_HEIGHT}"
-  - docker exec -it ascii-cow-test ./ascii-cow.sh -u "${TEST_URL}" -w "${TEST_WIDTH}" -h "${TEST_HEIGHT}"
+  - docker run -d --name "${CONTAINER_NAME}" -p "${TEST_PORT}":80 "${IMAGE}"
+  - docker exec -it "${CONTAINER_NAME}" ./ascii-cow.sh -f "${TEST_FILE}" -w "${TEST_WIDTH}"
+  - docker exec -it "${CONTAINER_NAME}" ./ascii-cow.sh -f "${TEST_FILE}" -w "${TEST_WIDTH}" -h "${TEST_HEIGHT}"
+  - docker exec -it "${CONTAINER_NAME}" ./ascii-cow.sh -u "${TEST_URL}" -w "${TEST_WIDTH}" -h "${TEST_HEIGHT}"
   - curl "http://localhost:${TEST_PORT}"
   - curl "http://localhost:${TEST_PORT}/cows"
   - curl "http://localhost:${TEST_PORT}/convert?url=${TEST_URL}&width=${TEST_WIDTH}"
-  - docker rm -f ascii-cow-test
+  - docker rm -f "${CONTAINER_NAME}"
 
 after_success:
   # push to docker hub
+  - set -e
   - docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
   - docker tag "${IMAGE}":latest "${IMAGE}":"${VERSION}"
   - docker push "${IMAGE}":latest
