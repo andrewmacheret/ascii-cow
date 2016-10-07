@@ -5,11 +5,15 @@ language: node_js
 node_js:
   - '6'
 
+addons:
+  ssh_known_hosts: andrewmacheret.com
+
 env:
   global:
     # DOCKER_USERNAME and DOCKER_PASSWORD
     - secure: BjlnL+MdqcmVyzQza2fYgym+OABI/1lNlpBwLYZ3bXlyLvNGt+oo+S8vTj0Ilzu5945NfbyKUVpMUxLwhjNWL1PvjOPfGk2iOxLYgVt4IT1TewFZGISVENX0aUAj+tTHf8l9mpCnRczP45GE4VNc2zqZuaENagttxwnNEff/Qn/                  adUrNh9pc4BcmWaY2S7kYJR179AuESMVej7K+5JwvLCSMaZZo+8k162XEkzDFnpbYzYlb+lXdSX9fkHVrHszkApxoqbg9rU+                                                                                                         Xn1QU6DdHaQjjx6ea1lxl7RdE5xomI87mNptesZmIjhAFhnUHNSNRRM06NMuqW7gmGv8oFW95MI0YtaMwZZA7dHnoVMP2XjvXPFr3mW13QVWbRTTyMEV1CLIbc15bKsmP3QUjHJT45LuNYGnogE7DuAR6ox0s9wp8efYfs9IgaZ1Gd4dvWC1ahLfvm+thx+          p1DYaL9tMeQDMI2lib/BPbqHXH9B5O25gb2y1yRjFwk7rZ56ZpMy3oz02uX6ZaFqbNOeHvKL5SBP2i5bZf26+On8PeWHpzlJaHTzgEYerqk61P4I2bbQffhIU/meZ6Z25BpmD4oLNQ1DQryg2Jyy+I95zRZuY0y/3g/NqsGWXQMoPa62IZWQ45m4y4LffJjJ1I/      9M9uPxwfcqiFuwMfV+kj5ZPK1PpMEo=
     - secure: mPiw+UMJzQKYvdTXheyY5AgXMim120vgxOJgEkZkv7eVmjRU+bXqYMSGFoYWJDBCOrOIu0a2nBW/                                                                                                                 vec0C4AnLKbWV1Is8AyMXj0crKm9ueBHDoxB7IhgkF22GG7a1L0UdvgV9VAk1QDuzfMt3pR9wdIM7eBwyeVxgUS3mPZzAxoWd4usCJDbAtgQtpHubQ5DxsAl754Bl0FqQsvrKVv/QtQ75sXsW58xVsdtmMFJbEA1F/J9Z0n4iWzJqRFXPabBjgtFoDL+             aBmlAG8mKPv8XdHq/wjIlORyOLcQLVih69S/2ODJlKrmAWoFjTyWqLim/i89owbFuWSeeaXuoS/CKB1dGHo+r4Pihw/aqfF8yLgta8NunAfRv6KFwYcPOb38Hm+IerHYwoaMfIC7dB/wjsYOwzRpWI+5kM/S+1goVNB4ToC11f7b/                            nN6lcCrMefSIygrU4mUyj0yrIhL0gsXWnFKLAFOWeEqS8dDBjH/u9/gQS23k8/NtqfBM2jAyCqBHXFm9tH0CW2yKC3cNokbtE5U1dQGeT77jwkiRfs/YBI9UYRElOe3iW5HDmFddlRRt/SShftDvetPWOTYLmlcr//xlx+                                   OQSWeL7vjGuCfElq554dWnTPuDPmj8ZoaqCt9clfi8Hax5CtoCas0S7T0JnkzVlo/1JVg2E/5vzXN58M=
+    - SERVICE_NAME='ascii-cow'
     - CONTAINER_NAME='ascii-cow'
     - VERSION=1.1
     - TEST_PORT='9999'
@@ -53,4 +57,9 @@ after_success:
   - docker tag "${DOCKER_USERNAME}/${CONTAINER_NAME}":latest "${DOCKER_USERNAME}/${CONTAINER_NAME}":"${VERSION}"
   - docker push "${DOCKER_USERNAME}/${CONTAINER_NAME}":latest
   - docker push "${DOCKER_USERNAME}/${CONTAINER_NAME}":"${VERSION}"
-
+  # ssh deploy
+  - openssl aes-256-cbc -K $encrypted_7d74b8ea50cf_key -iv $encrypted_7d74b8ea50cf_iv -in id_rsa_a1-server.enc -out "${TRAVIS_BUILD_DIR}/id_rsa_a1-server" -d
+  - eval "$(ssh-agent -s)"
+  - chmod 600 "${TRAVIS_BUILD_DIR}/id_rsa_a1-server"
+  - ssh-add "${TRAVIS_BUILD_DIR}/id_rsa_a1-server"
+  - ssh ubuntu@andrewmacheret.com "cd ~/servers && docker-compose pull ${SERVICE_NAME} && docker-compose up -d --force-recreate ${SERVICE_NAME}"
