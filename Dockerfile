@@ -33,5 +33,7 @@ ADD ascii-cow.sh .
 ADD ascii-cow-server.js .
 ADD example.jpg .
 
+EXPOSE 80
+
 CMD ["node", "ascii-cow-server.js"]
 
