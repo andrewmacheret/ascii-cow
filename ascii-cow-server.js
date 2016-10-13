@@ -49,6 +49,8 @@ var invalidInput = function(res, error) {
 
 console.log('Registering GET /');
 app.get('/', function(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+
   var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
   var apis = [
     fullUrl + 'cows',
@@ -59,12 +61,16 @@ app.get('/', function(req, res) {
 
 console.log('Registering GET /cows');
 app.get('/cows', function(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+
   var cowResult = run('cowsay', ['-l']);
   res.send(cowResult.stdout.toString('utf8'));
 });
 
 console.log('Registering GET /convert');
 app.get('/convert', function(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  
   // image source
   var url = req.query['url'];
   var file = req.query['file'];
