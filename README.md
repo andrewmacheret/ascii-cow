@@ -46,6 +46,21 @@ Run it:
   echo -e "$( curl -s "http://localhost:8080/convert?url=$url&width=80" )"
   ```
 
+## Server API:
+
+  * `GET /` lists the API URLs.
+  * `GET /cows` lists the cow files.
+  * `GET /convert` converts an image from a URL. Query parameters:
+    * `url` (required): an http or https image URL. Local files can only be converted with `ascii-cow.sh -f`.
+    * `width` and/or `height` (at least one): positive integers.
+    * `aspect-ratio`: like `4:3`. Ignored if both width and height are given.
+    * `say` or `think`: use cowsay (default) or cowthink.
+    * `eyes`, `tongue`: 1 or 2 characters.
+    * `feeling`: one of `borg`, `dead`, `greedy`, `paranoia`, `stoned`, `tired`, `wired`, `youthful`.
+    * `cow-file`: a cow name from `/cows`.
+
+The server listens on port 80, or on `$PORT` if set. Bad input returns 400, and a failed conversion returns 500.
+
 ## Building docker container from source:
 
 Dependencies:

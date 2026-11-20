@@ -37,8 +37,6 @@ ENV PATH="/usr/games:${PATH}"
 COPY --from=im2a /usr/local/bin/im2a /usr/local/bin/im2a
 
 WORKDIR /root
-COPY package.json package-lock.json ./
-RUN npm ci --omit=dev
 COPY ascii-cow.sh ascii-cow-server.js example.jpg ./
 
 EXPOSE 80
