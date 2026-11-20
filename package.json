@@ -1,8 +1,8 @@
 {
   "name": "ascii-cow",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Give it an image and a size, and get colorful ascii art spoken by a cow.",
-  "main": "ascii-cow-server.sh",
+  "main": "ascii-cow-server.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/andrewmacheret/ascii-cow.git"

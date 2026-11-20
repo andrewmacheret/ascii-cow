@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  IMAGE: ghcr.io/${{ github.repository }}
+  TEST_PORT: '9999'
+  TEST_FILE: example.jpg
+  TEST_URL: https://raw.githubusercontent.com/andrewmacheret/ascii-cow/master/example.jpg
+  TEST_WIDTH: '40'
+  TEST_HEIGHT: '20'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build image
+        run: docker build -t ascii-cow .
+
+      - name: Smoke test
+        run: |
+          set -euo pipefail
+          docker run -d --name ascii-cow -p "${TEST_PORT}:80" ascii-cow
+          trap 'docker logs ascii-cow; docker rm -f ascii-cow' EXIT
+          docker exec ascii-cow ./ascii-cow.sh -f "${TEST_FILE}" -w "${TEST_WIDTH}"
+          docker exec ascii-cow ./ascii-cow.sh -f "${TEST_FILE}" -w "${TEST_WIDTH}" -h "${TEST_HEIGHT}"
+          docker exec ascii-cow ./ascii-cow.sh -u "${TEST_URL}" -w "${TEST_WIDTH}" -h "${TEST_HEIGHT}"
+          curl -fsS --retry 10 --retry-connrefused --retry-delay 1 "http://localhost:${TEST_PORT}"
+          curl -fsS "http://localhost:${TEST_PORT}/cows"
+          curl -fsS "http://localhost:${TEST_PORT}/convert?url=${TEST_URL}&width=${TEST_WIDTH}"
+
+      - name: Push to GHCR
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
+        run: |
+          set -euo pipefail
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          version="$(node -p 'require("./package.json").version')"
+          for tag in latest "${version}" "${GITHUB_SHA::7}"; do
+            docker tag ascii-cow "${IMAGE}:${tag}"
+            docker push "${IMAGE}:${tag}"
+          done
