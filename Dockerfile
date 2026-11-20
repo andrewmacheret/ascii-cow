@@ -8,7 +8,7 @@ RUN apt-get update &&\
   cd /tmp/im2a &&\
   git checkout "${IM2A_REF}" &&\
   ./bootstrap &&\
-  ./configure &&\
+  ./configure --with-magick++-config="$(find /usr/lib -name Magick++-config | head -1)" &&\
   make &&\
   make install
 
