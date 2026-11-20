@@ -59,7 +59,7 @@ Run it:
     * `feeling`: one of `borg`, `dead`, `greedy`, `paranoia`, `stoned`, `tired`, `wired`, `youthful`.
     * `cow-file`: a cow name from `/cows`.
 
-The server listens on port 80, or on `$PORT` if set. Bad input returns 400, and a failed conversion returns 500.
+The server listens on port 80, or on `$PORT` if set. Bad input returns 400, a failed conversion returns 500, and a conversion that takes over 30 seconds returns 504. Image downloads give up after 20 seconds or 20 MB.
 
 ## Building docker container from source:
 

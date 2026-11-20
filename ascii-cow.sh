@@ -127,8 +127,8 @@ which identify >/dev/null || {
 which perl >/dev/null || {
   error "Dependency perl missing."
 }
-which cowsay >/dev/null || {
-  error "Dependency cowsay missing."
+which "${COW_CMD}" >/dev/null || {
+  error "Dependency ${COW_CMD} missing."
 }
 
 load_file() {
@@ -139,7 +139,8 @@ load_file() {
 
     make_temp_dir
     FILE="${TEMP_DIR}/downloaded-image"
-    curl -fsSL "${IMAGE_FILE}" > "${FILE}"
+    # give up on slow or huge downloads
+    curl -fsSL --max-time 20 --max-filesize 20000000 "${IMAGE_FILE}" > "${FILE}"
   else
     FILE="${IMAGE_FILE}"
   fi
@@ -169,7 +170,7 @@ calculate_size() {
 
 convert_image() {
   im2a $IM2A_ARGS -W "${WIDTH}" -H "${HEIGHT}" "${FILE}" |
-    cowsay $COW_ARGS -n |
+    "${COW_CMD}" $COW_ARGS -n |
     perl -p -e 's/(([-_]){'"${WIDTH}"'})[-_]+/\1\2\2/' |
     perl -p -e 's/ +([|\/\\]) *$/ \1/'
 }

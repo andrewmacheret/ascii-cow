@@ -40,9 +40,8 @@ var ASPECT_RATIO = /^[1-9][0-9]*:[1-9][0-9]*$/;
 var EYES_OR_TONGUE = /^[^\s*?[\]]{1,2}$/;
 var COW_FILE = /^[A-Za-z0-9_.-]+$/;
 
-var run = function(command, args) {
-  return child_process.spawnSync(command, args, {});
-};
+// give up on a command after this long, like a slow image download
+var TIMEOUT_MILLIS = 30000;
 
 var send = function(res, status, body) {
   res.statusCode = status;
@@ -55,16 +54,40 @@ var invalidInput = function(res, error) {
   send(res, 400, error);
 };
 
-var sendResult = function(res, cowResult) {
-  if (cowResult.error) {
-    send(res, 500, JSON.stringify({
-      error: cowResult.error.message
+// runs in the background so one slow request doesn't hold up the others
+var runAndSend = function(res, command, args) {
+  var child = child_process.spawn(command, args);
+  var stdout = [];
+  var stderr = [];
+  var done = false;
+
+  var finish = function(status, body) {
+    if (done) return;
+    done = true;
+    clearTimeout(timer);
+    send(res, status, body);
+  };
+
+  var timer = setTimeout(function() {
+    finish(504, 'Timed out after ' + (TIMEOUT_MILLIS / 1000) + ' seconds');
+    child.kill();
+  }, TIMEOUT_MILLIS);
+
+  child.stdout.on('data', function(chunk) { stdout.push(chunk); });
+  child.stderr.on('data', function(chunk) { stderr.push(chunk); });
+  child.on('error', function(error) {
+    finish(500, JSON.stringify({
+      error: error.message
     }));
-  } else if (cowResult.status !== 0) {
-    send(res, 500, cowResult.stderr.toString('utf8') + cowResult.stdout.toString('utf8'));
-  } else {
-    send(res, 200, cowResult.stdout.toString('utf8'));
-  }
+  });
+  child.on('close', function(code) {
+    var out = Buffer.concat(stdout).toString('utf8');
+    if (code !== 0) {
+      finish(500, Buffer.concat(stderr).toString('utf8') + out);
+    } else {
+      finish(200, out);
+    }
+  });
 };
 
 var routes = {};
@@ -79,7 +102,7 @@ routes['/'] = function(req, res) {
 };
 
 routes['/cows'] = function(req, res) {
-  sendResult(res, run('cowsay', ['-l']));
+  runAndSend(res, 'cowsay', ['-l']);
 };
 
 routes['/convert'] = function(req, res, query) {
@@ -184,7 +207,7 @@ routes['/convert'] = function(req, res, query) {
     args.push(cowArgs.join(' '));
   }
 
-  sendResult(res, run('./ascii-cow.sh', args));
+  runAndSend(res, './ascii-cow.sh', args);
 };
 
 var server = http.createServer(function(req, res) {
