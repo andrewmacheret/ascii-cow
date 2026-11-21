@@ -86,17 +86,18 @@ while [[ $# > 0 ]] ; do
       ASPECT_RATIO="$1"
       shift
       ;;
-    -s|--cow-say)
+    # the server uses the dashed spellings
+    -s|--cowsay|--cow-say)
       COW_CMD='cowsay'
       ;;
-    -t|--cow-think)
+    -t|--cowthink|--cow-think)
       COW_CMD='cowthink'
       ;;
     -c|--cow-args)
       COW_ARGS=$1
       shift
       ;;
-    -i|--im2a-args)
+    -i|--im2a|--im2a-args)
       IM2A_ARGS=$1
       shift
       ;;

@@ -19,6 +19,8 @@ The formula lives in [andrewmacheret/homebrew-tap](https://github.com/andrewmach
 Dependencies:
 
   * [im2a](https://github.com/tzvetkoff/im2a)
+  * [ImageMagick](https://imagemagick.org/) (for `identify`)
+  * [curl](https://curl.se/) (only for `-u`)
   * [perl](https://www.perl.org/)
   * [cowsay](https://en.wikipedia.org/wiki/Cowsay)
   * [bash](https://www.gnu.org/software/bash/)
