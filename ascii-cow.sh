@@ -147,9 +147,8 @@ load_file() {
 }
 
 load_image_size() {
-  image_size="$( identify "$FILE" | cut -d' ' -f3 )"
-  image_width="$( cut -dx -f1 <<< "$image_size" )"
-  image_height="$( cut -dx -f2 <<< "$image_size" )"
+  # first frame only, so animated gifs work too
+  read -r image_width image_height <<< "$( identify -format '%w %h\n' "$FILE" | head -n 1 )"
   [[ $image_width  != "" ]] && [[ $image_width  -gt 0 ]] || error "Could not determine image width"
   [[ $image_height != "" ]] && [[ $image_height -gt 0 ]] || error "Could not determine image height"
   ASPECT_WIDTH="$( cut -d':' -f1 <<< "$ASPECT_RATIO" )"

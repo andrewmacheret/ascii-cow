@@ -4,6 +4,16 @@
 
 Give it an image and a size, and get colorful ascii art spoken by a cow.
 
+## Installing with Homebrew:
+
+  ```bash
+  brew install andrewmacheret/tap/ascii-cow
+
+  ascii-cow -f "$(brew --prefix)/share/ascii-cow/example.jpg" -w 80
+  ```
+
+The formula lives in [andrewmacheret/homebrew-tap](https://github.com/andrewmacheret/homebrew-tap). It builds im2a for you and installs cowsay and ImageMagick. The server isn't included, so use the docker container for that.
+
 ## Running locally:
 
 Dependencies:
